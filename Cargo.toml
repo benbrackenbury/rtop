@@ -1,0 +1,9 @@
+[package]
+name = "rtop"
+version = "0.1.0"
+edition = "2024"
+description = "A process viewer that stays usable on a small terminal"
+
+[dependencies]
+ratatui = "0.30.2"
+sysinfo = { version = "0.40.1", default-features = false, features = ["system", "user"] }
