@@ -3,8 +3,8 @@
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 
-/// Phone SSH with the keyboard up is often about a dozen rows.
-const COMPACT_MAX_ROWS: u16 = 14;
+/// Shorter than a classic 24-line terminal: one status line, rest is the list.
+const COMPACT_MAX_ROWS: u16 = 23;
 /// A 24-line terminal gets one meter line. Per-core bars start once there is room.
 const CORES_MIN_ROWS: u16 = 28;
 const FOOTER_MIN_ROWS: u16 = 18;
@@ -104,7 +104,11 @@ pub struct Screen {
 
 impl Screen {
     pub fn show_col_header(&self) -> bool {
-        self.body_rows >= 2 && !self.columns.is_empty()
+        // Phone columns are pid / cpu / mem / cmd; the numbers already read.
+        // Wider compact panes keep titles so USER / TIME stay obvious.
+        self.body_rows >= 2
+            && !self.columns.is_empty()
+            && (self.columns.len() > 4 || !matches!(self.header, Header::Summary | Header::None))
     }
 
     pub fn process_rows(&self) -> u16 {
@@ -764,8 +768,14 @@ mod tests {
         let s = screen(40, 12, 8, false);
         assert_eq!(s.header, Header::Summary);
         assert_eq!(s.footer_rows, 0);
-        assert!(s.process_rows() >= 9, "rows {}", s.process_rows());
+        assert!(!s.show_col_header());
+        assert!(s.process_rows() >= 10, "rows {}", s.process_rows());
         assert_eq!(s.header_rows + s.body_rows + s.footer_rows, 12);
+
+        let phone = screen(40, 20, 8, false);
+        assert_eq!(phone.header, Header::Summary);
+        assert!(!phone.show_col_header());
+        assert_eq!(phone.footer_rows, 0);
     }
 
     #[test]

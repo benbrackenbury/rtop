@@ -433,10 +433,13 @@ mod tests {
 
         let (phone, reversed) = render(40, 12, &mut app);
         assert!(phone[0].contains("cpu"), "summary: {:?}", phone[0]);
-        assert!(reversed[2], "selected process row is not highlighted");
         assert!(phone[0].contains("mem"), "summary: {:?}", phone[0]);
-        assert!(phone[1].contains("PID"), "header: {:?}", phone[1]);
-        assert!(phone[1].contains("CPU"), "header: {:?}", phone[1]);
+        assert!(
+            !phone[1].contains("PID"),
+            "column titles ate a phone row: {:?}",
+            phone[1]
+        );
+        assert!(reversed[1], "selected process row is not highlighted");
         assert!(
             !phone[11].contains("quit"),
             "footer ate a phone row: {:?}",
@@ -444,11 +447,11 @@ mod tests {
         );
         let listed = phone
             .iter()
-            .skip(2)
+            .skip(1)
             .filter(|line| line.chars().any(|c| c.is_ascii_digit()))
             .count();
         assert!(
-            listed >= 8,
+            listed >= 9,
             "expected processes on a 12-row screen, got {phone:?}"
         );
 

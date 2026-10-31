@@ -2,7 +2,7 @@
 
 A process viewer that still works when the terminal is a phone.
 
-Over SSH, the on-screen keyboard covers the bottom third of the display and leaves about a dozen rows. rtop uses one status line there and gives the rest to the process list. On a normal 24-line terminal it adds cpu and memory meters. On a tall window it adds a per-core grid and the extra columns.
+Over SSH, the on-screen keyboard covers the bottom third of the display and leaves a short screen. rtop uses one status line there and gives the rest to the process list. On a 24-line terminal it adds cpu and memory meters. On a tall window it adds a per-core grid and the extra columns.
 
 ```
 cargo run --release
